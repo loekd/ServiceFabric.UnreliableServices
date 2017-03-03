@@ -42,24 +42,6 @@ namespace UnreliableStatefulService
 				await CrashAsync($"RunAsync always crashes after {minutesBeforeCrash} minutes...");
 			});
 
-			//queue remote crash:
-			ThreadPool.QueueUserWorkItem(async _ =>
-			{
-				//wait a random bit so not every service instance crashes at the same time
-				await Task.Delay(TimeSpan.FromSeconds(new Random().Next(0, 20)), cancellationToken);
-
-				try
-				{
-					var servicePartitionKey = new ServicePartitionKey(new Random().Next(int.MinValue, int.MaxValue)); //take random partition
-					var serviceProxy = ServiceProxy.Create<IUnreliableStatelessService>(new Uri("fabric:/ServiceFabric.UnreliableServices/UnreliableStatefulService"), servicePartitionKey);
-					await serviceProxy.TimeoutOperation(new Random().Next(0, 10) * 1000);  //this call will fail about half the time
-				}
-				catch (Exception e)
-				{
-					ServiceEventSource.Current.ServiceMessage(Context, e.Message);
-				}
-			});
-
 			//begin calling the UnreliableActor
 			while (!cancellationToken.IsCancellationRequested)
 			{
@@ -73,6 +55,21 @@ namespace UnreliableStatefulService
 				{
 					ServiceEventSource.Current.ServiceMessage(Context, e.Message);
 				}
+
+				await Task.Delay(TimeSpan.FromSeconds(new Random().Next(0, 30)), cancellationToken);
+
+				//call service:
+				try
+				{
+					var servicePartitionKey = ServicePartitionKey.Singleton;
+					var serviceProxy = ServiceProxy.Create<IUnreliableStatelessService>(new Uri("fabric:/ServiceFabric.UnreliableServices/UnreliableStatelessService"), servicePartitionKey);
+					await serviceProxy.TimeoutOperation(new Random().Next(0, 10) * 1000);  //this call will fail about half the time
+				}
+				catch (Exception e)
+				{
+					ServiceEventSource.Current.ServiceMessage(Context, e.Message);
+				}
+
 				await Task.Delay(TimeSpan.FromSeconds(new Random().Next(0, 30)), cancellationToken);
 			}
 		}
@@ -99,5 +96,5 @@ namespace UnreliableStatefulService
 		}
 	}
 
-	
+
 }

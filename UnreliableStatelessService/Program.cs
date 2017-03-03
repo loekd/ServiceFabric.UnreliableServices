@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Fabric;
 using System.Threading;
 using System.Threading.Tasks;
+using Common;
 using Microsoft.ServiceFabric.Services.Runtime;
 
 namespace UnreliableStatelessService
@@ -16,6 +17,8 @@ namespace UnreliableStatelessService
 		{
 			try
 			{
+				EventSourceRegistrationHelper.Register();
+
 				// The ServiceManifest.XML file defines one or more service type names.
 				// Registering a service maps a service type name to a .NET type.
 				// When Service Fabric creates an instance of this service type,

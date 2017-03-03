@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Fabric;
 using System.Threading;
 using System.Threading.Tasks;
+using Common;
 using Microsoft.ServiceFabric.Actors.Runtime;
 
 namespace UnreliableActor
@@ -16,6 +17,7 @@ namespace UnreliableActor
 		{
 			try
 			{
+				EventSourceRegistrationHelper.Register();
 				// This line registers an Actor Service to host your actor class with the Service Fabric runtime.
 				// The contents of your ServiceManifest.xml and ApplicationManifest.xml files
 				// are automatically populated when you build this project.

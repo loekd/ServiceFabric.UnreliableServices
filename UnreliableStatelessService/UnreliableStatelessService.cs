@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Common;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
+using Microsoft.ServiceFabric.Services.Client;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Remoting.Client;
 using Microsoft.ServiceFabric.Services.Runtime;
@@ -42,23 +43,7 @@ namespace UnreliableStatelessService
 
 			});
 
-			//queue remote crash:
-			ThreadPool.QueueUserWorkItem(async _ =>
-			{
-				//wait a random bit so not every service instance crashes at the same time
-				await Task.Delay(TimeSpan.FromSeconds(new Random().Next(0, 20)), cancellationToken);
-
-				try
-				{
-					var serviceProxy = ServiceProxy.Create<IUnreliableStatefulService>(new Uri("fabric:/ServiceFabric.UnreliableServices/UnreliableStatelessService"));
-					await serviceProxy.TimeoutOperation(new Random().Next(0, 10) * 1000);  //this call will fail about half the time
-				}
-				catch (Exception e)
-				{
-					ServiceEventSource.Current.ServiceMessage(Context, e.Message);
-				}
-			});
-
+		
 			//begin calling the UnreliableActor
 			while (!cancellationToken.IsCancellationRequested)
 			{
@@ -72,6 +57,21 @@ namespace UnreliableStatelessService
 				{
 					ServiceEventSource.Current.ServiceMessage(Context, e.Message);
 				}
+
+				await Task.Delay(TimeSpan.FromSeconds(new Random().Next(0, 30)), cancellationToken);
+
+				//call Service
+				try
+				{
+					var servicePartitionKey = new ServicePartitionKey(new Random().Next(int.MinValue, int.MaxValue)); //take random partition
+					var serviceProxy = ServiceProxy.Create<IUnreliableStatefulService>(new Uri("fabric:/ServiceFabric.UnreliableServices/UnreliableStatefulService"), servicePartitionKey);
+					await serviceProxy.TimeoutOperation(new Random().Next(0, 10) * 1000);  //this call will fail about half the time
+				}
+				catch (Exception e)
+				{
+					ServiceEventSource.Current.ServiceMessage(Context, e.Message);
+				}
+
 				await Task.Delay(TimeSpan.FromSeconds(new Random().Next(0, 30)), cancellationToken);
 			}
 		}
