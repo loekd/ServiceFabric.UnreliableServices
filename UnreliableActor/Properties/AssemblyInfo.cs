@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Microsoft.ServiceFabric.Actors.Remoting.FabricTransport;
 using Microsoft.ServiceFabric.Services.Remoting.FabricTransport;
 
 // General Information about an assembly is controlled through the following 
@@ -36,3 +37,4 @@ using Microsoft.ServiceFabric.Services.Remoting.FabricTransport;
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: FabricTransportServiceRemotingProvider(OperationTimeoutInSeconds = 5)]
+[assembly: FabricTransportActorRemotingProvider(OperationTimeoutInSeconds = 5)]

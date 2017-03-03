@@ -52,7 +52,7 @@ namespace UnreliableStatefulService
 				{
 					var servicePartitionKey = new ServicePartitionKey(new Random().Next(int.MinValue, int.MaxValue)); //take random partition
 					var serviceProxy = ServiceProxy.Create<IUnreliableStatelessService>(new Uri("fabric:/ServiceFabric.UnreliableServices/UnreliableStatefulService"), servicePartitionKey);
-					await serviceProxy.TimeoutOperation(new Random().Next(0, 10));  //this call will fail about half the time
+					await serviceProxy.TimeoutOperation(new Random().Next(0, 10) * 1000);  //this call will fail about half the time
 				}
 				catch (Exception e)
 				{
@@ -67,7 +67,7 @@ namespace UnreliableStatefulService
 				try
 				{
 					var actorProxy = ActorProxy.Create<IUnreliableActor>(ActorId.CreateRandom());
-					await actorProxy.TimeoutOperation(new Random().Next(0, 10));  //this call will fail about half the time
+					await actorProxy.TimeoutOperation(new Random().Next(0, 10) * 1000);  //this call will fail about half the time
 				}
 				catch (Exception e)
 				{

@@ -34,7 +34,7 @@ namespace UnreliableStatelessService
 			ThreadPool.QueueUserWorkItem(async _ =>
 			{
 				//wait a random bit so not every service instance crashes at the same time
-				await Task.Delay(TimeSpan.FromSeconds(new Random().Next(0, 20)), cancellationToken);
+				await Task.Delay(TimeSpan.FromSeconds(new Random().Next(0, 20) * 1000), cancellationToken);
 
 				int minutesBeforeCrash = 5;
 				await Task.Delay(TimeSpan.FromMinutes(minutesBeforeCrash), cancellationToken);
@@ -51,7 +51,7 @@ namespace UnreliableStatelessService
 				try
 				{
 					var serviceProxy = ServiceProxy.Create<IUnreliableStatefulService>(new Uri("fabric:/ServiceFabric.UnreliableServices/UnreliableStatelessService"));
-					await serviceProxy.TimeoutOperation(new Random().Next(0, 10));  //this call will fail about half the time
+					await serviceProxy.TimeoutOperation(new Random().Next(0, 10) * 1000);  //this call will fail about half the time
 				}
 				catch (Exception e)
 				{
