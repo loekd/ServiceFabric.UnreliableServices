@@ -4,16 +4,21 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProjectGuid>{9207707F-7EB8-4B82-B5DB-3385908F9DAF}</ProjectGuid>
+    <ProjectGuid>{565688B1-45E3-44A3-836C-8F8558E983A2}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnreliableStatelessService</RootNamespace>
-    <AssemblyName>UnreliableStatelessService</AssemblyName>
+    <RootNamespace>UnreliableActor</RootNamespace>
+    <AssemblyName>UnreliableActor</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup>
+    <UpdateServiceFabricManifestEnabled>true</UpdateServiceFabricManifestEnabled>
+    <ServicePackagePath>PackageRoot</ServicePackagePath>
+    <ServicePackagePrefix>$(MSBuildProjectName)</ServicePackagePrefix>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,9 +38,6 @@
     <ErrorReport>prompt</ErrorReport>
     <PlatformTarget>x64</PlatformTarget>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AdditionalFileItemNames>$(AdditionalFileItemNames);None</AdditionalFileItemNames>
   </PropertyGroup>
   <PropertyGroup>
     <IsServiceFabricServiceProject>true</IsServiceFabricServiceProject>
@@ -83,21 +85,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnreliableStatelessService.cs" />
+    <Compile Include="UnreliableActor.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="ServiceEventSource.cs" />
+    <Compile Include="ActorEventSource.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PackageRoot\Config\Settings.xml" />
     <None Include="PackageRoot\ServiceManifest.xml" />
+    <None Include="PackageRoot\Config\Settings.xml" />
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{E49C5F54-12B6-41EB-B442-53AE72EAB4B4}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\UnreliableActor.Interfaces\UnreliableActor.Interfaces.csproj">
       <Project>{178107EB-C013-4A0E-9638-2E5BD8F5DD01}</Project>
       <Name>UnreliableActor.Interfaces</Name>
@@ -111,11 +109,4 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.ServiceFabric.Actors.2.4.164\build\Microsoft.ServiceFabric.Actors.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ServiceFabric.Actors.2.4.164\build\Microsoft.ServiceFabric.Actors.targets'))" />
   </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

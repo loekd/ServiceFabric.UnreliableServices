@@ -29,6 +29,8 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\UnreliableActor\UnreliableActor.csproj" />
+    <ProjectReference Include="..\UnreliableStatefulService\UnreliableStatefulService.csproj" />
     <ProjectReference Include="..\UnreliableStatelessService\UnreliableStatelessService.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />

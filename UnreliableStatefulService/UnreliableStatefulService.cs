@@ -6,20 +6,21 @@ using System.Threading.Tasks;
 using Common;
 using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Client;
+using Microsoft.ServiceFabric.Services.Client;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Remoting.Client;
 using Microsoft.ServiceFabric.Services.Runtime;
 using Microsoft.ServiceFabric.Services.Remoting.Runtime;
 using UnreliableActor.Interfaces;
 
-namespace UnreliableStatelessService
+namespace UnreliableStatefulService
 {
 	/// <summary>
-	/// Stateless service that doesn't work very well.
+	/// Stateful service that doesn't work very well.
 	/// </summary>
-	internal sealed class UnreliableStatelessService : StatelessService, IUnreliableStatelessService
+	internal sealed class UnreliableStatefulService : StatefulService, IUnreliableStatefulService
 	{
-		public UnreliableStatelessService(StatelessServiceContext context)
+		public UnreliableStatefulService(StatefulServiceContext context)
 			: base(context)
 		{ }
 
@@ -36,10 +37,9 @@ namespace UnreliableStatelessService
 				//wait a random bit so not every service instance crashes at the same time
 				await Task.Delay(TimeSpan.FromSeconds(new Random().Next(0, 20)), cancellationToken);
 
-				int minutesBeforeCrash = 5;
+				int minutesBeforeCrash = 6;
 				await Task.Delay(TimeSpan.FromMinutes(minutesBeforeCrash), cancellationToken);
 				await CrashAsync($"RunAsync always crashes after {minutesBeforeCrash} minutes...");
-
 			});
 
 			//queue remote crash:
@@ -50,7 +50,8 @@ namespace UnreliableStatelessService
 
 				try
 				{
-					var serviceProxy = ServiceProxy.Create<IUnreliableStatefulService>(new Uri("fabric:/ServiceFabric.UnreliableServices/UnreliableStatelessService"));
+					var servicePartitionKey = new ServicePartitionKey(new Random().Next(int.MinValue, int.MaxValue)); //take random partition
+					var serviceProxy = ServiceProxy.Create<IUnreliableStatelessService>(new Uri("fabric:/ServiceFabric.UnreliableServices/UnreliableStatefulService"), servicePartitionKey);
 					await serviceProxy.TimeoutOperation(new Random().Next(0, 10));  //this call will fail about half the time
 				}
 				catch (Exception e)
@@ -66,7 +67,7 @@ namespace UnreliableStatelessService
 				try
 				{
 					var actorProxy = ActorProxy.Create<IUnreliableActor>(ActorId.CreateRandom());
-					await actorProxy.CrashAsync("Crash triggered by UnreliableStatelessService");
+					await actorProxy.TimeoutOperation(new Random().Next(0, 10));  //this call will fail about half the time
 				}
 				catch (Exception e)
 				{
@@ -80,9 +81,9 @@ namespace UnreliableStatelessService
 		/// Enable SF remoting to interact with this service.
 		/// </summary>
 		/// <returns></returns>
-		protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
+		protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
 		{
-			yield return new ServiceInstanceListener(this.CreateServiceRemotingListener, "UnreliableStatelessServiceEndpoint");
+			yield return new ServiceReplicaListener(this.CreateServiceRemotingListener, "UnreliableStatelessServiceEndpoint");
 		}
 
 		/// <inheritdoc />

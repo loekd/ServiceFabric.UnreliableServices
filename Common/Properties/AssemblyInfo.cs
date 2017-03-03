@@ -1,16 +1,15 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Microsoft.ServiceFabric.Services.Remoting.FabricTransport;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("UnreliableStatelessService")]
+[assembly: AssemblyTitle("Common")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("UnreliableStatelessService")]
+[assembly: AssemblyProduct("Common")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -21,7 +20,7 @@ using Microsoft.ServiceFabric.Services.Remoting.FabricTransport;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("9207707f-7eb8-4b82-b5db-3385908f9daf")]
+[assembly: Guid("e49c5f54-12b6-41eb-b442-53ae72eab4b4")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -35,4 +34,3 @@ using Microsoft.ServiceFabric.Services.Remoting.FabricTransport;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: FabricTransportServiceRemotingProvider(OperationTimeoutInSeconds = 5)]
