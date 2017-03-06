@@ -25,12 +25,16 @@ namespace UnreliableActor
 		/// <inheritdoc />
 		public Task CrashAsync(string errorMessage)
 		{
+			ActorEventSource.Current.ActorMessage(this, $"Actor {this.Id} is triggered to crash with errorMessage:'{errorMessage}'.");
+
 			throw new FabricException(errorMessage);
 		}
 
 		/// <inheritdoc />
 		public async Task TimeoutOperation(int waitTimeMs)
 		{
+			ActorEventSource.Current.ActorMessage(this, $"Actor {this.Id} is triggered to sleep for {waitTimeMs} ms.");
+
 			await Task.Delay(waitTimeMs);
 		}
 	}
